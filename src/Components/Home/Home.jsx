@@ -1,12 +1,28 @@
 import React from 'react'
 import styles from './Home.module.css'
+import { Link } from 'react-router-dom'
+import Head from '../Head/Head'
 
 const Home = () => {
+  const [produtos, setProdutos] = React.useState(null)
+
+  React.useEffect(()=>{
+    fetch('https://ranekapi.origamid.dev/json/api/produto')
+      .then((r)=> r.json())
+      .then((json) => setProdutos(json))
+  }, [])
+  console.log(produtos)
+  if (produtos === null) return null
   return (
-    <div className={styles.home}>
+    <section className={`${styles.produtos} animeLeft`}>
       <Head title = 'Home'/>
-      <h1>Bem vindo!</h1>
-    </div>
+      {produtos.map((produto) => (
+        <Link to={`produto/${produto.id}`} key={produto.id}>
+          <img src={produto.fotos[0].src} alt={produto.fotos[0].titulo} />
+          <h1 className={styles.nome}>{produto.nome}</h1>
+        </Link>
+      ))}
+    </section>
   )
 }
 
